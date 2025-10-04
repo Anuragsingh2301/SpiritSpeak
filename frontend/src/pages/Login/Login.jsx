@@ -3,6 +3,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FormikInput from '../../components/ui/FormikInput';
 import Button from '../../components/ui/Button';
+import { useEffect } from 'react';
 
 const loginValidationSchema = Yup.object({
   email: Yup.string()
@@ -15,7 +16,7 @@ const loginValidationSchema = Yup.object({
 
 const Login = () => {
   const navigate = useNavigate();
-  const isAuthenticated = true
+  const isAuthenticated = false
   const authError = false
   const isLoading = false
 
