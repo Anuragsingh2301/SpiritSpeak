@@ -35,7 +35,6 @@ const FormikInput = ({
           focus:ring-2 focus:ring-[#0D968A] 
           // Border is also set to a teal color on focus
           focus:border-[#11A697] 
-          // 👇 CHANGED: Error border color to dark teal
           ${hasError ? errorBorderColor : 'border-gray-300'}
           ${className}
         `}
