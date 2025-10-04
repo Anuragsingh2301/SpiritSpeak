@@ -1,11 +1,11 @@
-import ProfilePage from './pages/ProfilePage';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { routes } from './routes'
 
-function App() {
-  return (
-    <>
-      <ProfilePage />
-    </>
-  );
+const App = () => {
+
+  const router = createBrowserRouter(routes);
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;
