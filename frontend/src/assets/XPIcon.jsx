@@ -1,0 +1,2 @@
+import React from 'react';
+export const XPIcon = ({className}) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m11.42 21.84-7.2-3.5A2 2 0 0 1 3 16.5V8.3a2 2 0 0 1 1.28-1.83l7.2-4.24a2 2 0 0 1 1.95 0l7.2 4.24A2 2 0 0 1 21 8.3v8.2a2 2 0 0 1-1.22 1.84l-7.2 3.5a2 2 0 0 1-1.16 0Z"></path><path d="m12 2-2.2 4.8-5.2.8 3.8 3.8-1 5.2 4.6-2.4 4.6 2.4-1-5.2 3.8-3.8-5.2-.8Z"></path></svg> );

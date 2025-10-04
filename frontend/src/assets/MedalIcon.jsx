@@ -1,0 +1,2 @@
+import React from 'react';
+export const MedalIcon = ({className}) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 6c-3.33 0-6 2.67-6 6s2.67 6 6 6 6-2.67 6-6-2.67-6-6-6z"></path><path d="m15.41 12-2.83 2.83-1.17-1.17"></path><path d="M12 18v4l-4-2 4-2"></path><path d="M12 18v4l4-2-4-2"></path></svg> );
