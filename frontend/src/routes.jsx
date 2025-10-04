@@ -8,7 +8,7 @@ import LoadingScreen from "./components/LoadingScreen";
 // imports from pages
 
 // public pages
-const Hero = React.lazy(() => import("./pages/Hero/Hero"));
+const Hero = React.lazy(() => import("./pages/Dashboard/Dashboard"));
 
 // auth pages
 const Login = React.lazy(() => import("./pages/Login/Login"));
@@ -16,13 +16,14 @@ const Register = React.lazy(() => import("./pages/Register/Register"));
 
 // protected pages
 const Profile = React.lazy(() => import("./pages/Profile/Profile"));
+const Dashboard = React.lazy(() => import("./pages/Dashboard/Dashboard"));
 
 
 
 export const routes = [
   {
     path: "/",
-    element: <Suspense fallback={<LoadingScreen />}><Hero /></Suspense>,
+    element: <Suspense fallback={<LoadingScreen />}><Login /></Suspense>,
   },
   {
     path: "/auth",
@@ -44,6 +45,10 @@ export const routes = [
         path: "profile", 
         element: <Profile />,
       },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      }
     ]
   },
   {

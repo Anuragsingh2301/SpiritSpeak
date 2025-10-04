@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FormikInput from '../../components/ui/FormikInput';
-import Button from '../../components/ui/Button';
+import LogoSVG from '../../assets/SVG.svg';
 
 const registerValidationSchema = Yup.object({
   name: Yup.string()
@@ -26,7 +26,7 @@ const registerValidationSchema = Yup.object({
 
 const Register = () => {
   const navigate = useNavigate();
-  const isAuthenticated = true
+  const isAuthenticated = false
   const authError = false
   const isLoading = false
 
@@ -53,22 +53,25 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link 
-              to="/auth/login" 
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
-              sign in to your existing account
-            </Link>
-          </p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-[#f0efeb] py-12 px-4 sm:px-6 lg:px-8">
+      {/* Container/Card Adjustments:
+        - Increased card height slightly to accommodate better internal spacing.
+        - Used 'space-y-6' (down from 8) to slightly reduce the spacing between major blocks (logo block, form, link).
+      */}
+      <div className="w-[532px] h-[682px] space-y-6 bg-white p-8 rounded-lg shadow-lg">
+        
+        {/* Header Block Adjustments */}
+        <img 
+            src={LogoSVG} 
+            alt="SpiritSpeak Logo" 
+            className='w-[112] h-[112] p-0 mx-auto mb-4' // Increased margin-bottom (mb-4) on logo
+        />
+        <h2 className=" text-center text-3xl p-0 m-0 font-bold text-[#40916c]">
+          Begin Your Journey
+        </h2>
+        <h4 className='mt-2 text-center font-sans text-gray-500'>
+          Your daily space to reflect and grow.
+        </h4>
         
         <Formik
           initialValues={initialValues}
@@ -76,12 +79,15 @@ const Register = () => {
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
-            <Form className="mt-8 space-y-6">
-              <div className="space-y-4">
+            <Form className="mt-4 space-y-6"> {/* Reduced margin-top (mt-4) */}
+              {/*
+                Input Spacing:
+                - Reduced vertical space between inputs from 'space-y-4' to 'space-y-3' for a tighter look without labels.
+              */}
+              <div className="space-y-3">
                 <FormikInput
                   name="name"
                   type="text"
-                  label="Full Name"
                   placeholder="Enter your full name"
                   autoComplete="name"
                 />
@@ -89,7 +95,6 @@ const Register = () => {
                 <FormikInput
                   name="email"
                   type="email"
-                  label="Email Address"
                   placeholder="Enter your email"
                   autoComplete="email"
                 />
@@ -97,26 +102,25 @@ const Register = () => {
                 <FormikInput
                   name="password"
                   type="password"
-                  label="Password"
                   placeholder="Create a password"
-                  helperText="Must contain uppercase, lowercase, and number"
+                  // Added mt-1 to helper text for proper spacing from the input
+                  helperText={<span className="mt-1">Must contain uppercase, lowercase, and number</span>}
                   autoComplete="new-password"
                 />
                 
                 <FormikInput
                   name="confirmPassword"
                   type="password"
-                  label="Confirm Password"
                   placeholder="Confirm your password"
                   autoComplete="new-password"
                 />
               </div>
 
               {authError && (
-                <div className="rounded-md bg-red-50 p-4">
+                <div className="rounded-md bg-[#a8fed7] p-4">
                   <div className="flex">
                     <div className="ml-3">
-                      <h3 className="text-sm font-medium text-red-800">
+                      <h3 className="text-sm font-medium text-[#25b977]">
                         {authError}
                       </h3>
                     </div>
@@ -124,20 +128,43 @@ const Register = () => {
                 </div>
               )}
 
-              <div>
-                <Button
+              <button
                   type="submit"
-                  variant="primary"
-                  size="lg"
-                  isLoading={isLoading || isSubmitting}
-                  className="w-full"
+                  disabled={isLoading || isSubmitting}
+                  className={`
+                    w-[384px] 
+                    h-[48px]
+                    mx-auto 
+                    mt-8 // Increased margin-top on the button for a clear break from inputs
+                    rounded-lg 
+                    font-semibold
+                    text-white 
+                    text-xl
+                    flex items-center justify-center
+
+                    // The Linear Gradient Class
+                    bg-gradient-to-r from-[#14B7A5] via-[#11A697] to-[#0D968A]
+                    
+                    hover:opacity-90 transition
+                    ${(isLoading || isSubmitting) ? 'opacity-70 cursor-not-allowed' : ''}
+                  `}
                 >
                   Create Account
-                </Button>
-              </div>
+              </button>
             </Form>
           )}
         </Formik>
+        
+        {/* Link Spacing: Added mt-8 to separate from the button visually */}
+        <p className="mt-8 text-center text-sm text-gray-600">
+          Already have an account?{' '}
+          <Link 
+            to="/auth/login" 
+            className="font-medium text-[#40916c] hover:text-[#225b41]"
+          >
+            Sign In
+          </Link>
+        </p>
       </div>
     </div>
   );

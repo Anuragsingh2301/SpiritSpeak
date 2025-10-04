@@ -7,20 +7,34 @@ const Button = ({
   className = '',
   ...props
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200';
+  // Base classes for consistent styling
+  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors duration-200';
   
   const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+    // 👇 CHANGED: Blue to Green
+    primary: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500',
+    
     secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500',
     danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-    outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500',
+    
+    // 👇 CHANGED: Blue to Green in focus ring
+    outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-green-500',
+    
+    // Custom gradient remains the same as it was already green
+    customGradient: 'text-white bg-gradient-to-r from-[#40916c] to-[#70c1b3] hover:opacity-90 focus:ring-[#70c1b3]',
   };
 
   const sizes = {
     sm: 'px-3 py-2 text-sm',
     md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-base',
+    
+    // Size for the custom gradient button
+    '2xl-lg': 'px-6 py-3 text-2xl', 
   };
+
+  // Determine the size class dynamically based on the variant
+  const sizeClass = variant === 'customGradient' ? sizes['2xl-lg'] : sizes[size];
 
   const isDisabled = disabled || isLoading;
 
@@ -31,7 +45,7 @@ const Button = ({
       className={`
         ${baseClasses}
         ${variants[variant]}
-        ${sizes[size]}
+        ${sizeClass}
         ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
         ${className}
       `}
