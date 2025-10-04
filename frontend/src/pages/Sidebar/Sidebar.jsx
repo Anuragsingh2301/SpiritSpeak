@@ -13,14 +13,11 @@ const navItems = [
 const Sidebar = () => {
   const location = useLocation();
 
-  const primaryColor = '#40916c'; // SpiritSpeak brand green/teal
-
   return (
     <div className="w-64 h-screen bg-white shadow-xl flex flex-col border-r border-gray-100">
       {/* Logo and Brand Name */}
       <div className="p-4 m-5 w-[193px] h-[40px] flex justify-around space-x-1.5 items-center border-b border-gray-100">
-        {/* Replace with your actual LogoSVG usage, if needed */}
-        <img src={LogoSVG} alt="Logo" className="h-[40px] w-[40px]  ml-0" />
+        <img src={LogoSVG} alt="Logo" className="h-[40px] w-[40px] ml-0" />
         <span className="text-xl font-bold text-[#40916c]">SpiritSpeak</span>
       </div>
 
@@ -30,12 +27,13 @@ const Sidebar = () => {
           const isActive = location.pathname === item.path;
           
           const activeClasses = `
-            bg-[${primaryColor}] text-white shadow-md
-            hover:bg-[${primaryColor}] hover:opacity-90
+            bg-gradient-to-r from-[#14B7A5] via-[#11A697] to-[#0D968A] text-white shadow-md
           `;
           
           const inactiveClasses = `
-            text-gray-600 hover:bg-gray-100
+            text-gray-600 
+            hover:bg-[#E0F2F1] hover:text-[#14B7A5]
+            focus:bg-[#E0F2F1] focus:text-[#14B7A5]
           `;
 
           return (
@@ -43,7 +41,7 @@ const Sidebar = () => {
               key={item.name}
               to={item.path}
               className={`
-                flex items-center px-4 py-2 rounded-lg font-medium transition-colors duration-150
+                flex items-center px-4 py-2 rounded-lg font-medium transition-all duration-200
                 ${isActive ? activeClasses : inactiveClasses}
               `}
             >
