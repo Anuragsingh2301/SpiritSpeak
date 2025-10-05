@@ -1,7 +1,6 @@
-import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LogoSVG from '../../assets/SVG.svg';
-import DiamondIcon from './Diamond'; // We'll create this simple icon below
+import { MdDiamond, MdOutlineDiamond } from "react-icons/md";
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard' },
@@ -54,7 +53,7 @@ const Sidebar = () => {
       {/* Premium Callout (Fixed at bottom) */}
       <div className="p-4 border-t border-gray-100">
         <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded-lg flex items-center space-x-2">
-            <DiamondIcon />
+            <MdDiamond className="text-yellow-500 text-2xl" />
             <span className="text-sm font-medium">Premium</span>
         </div>
       </div>

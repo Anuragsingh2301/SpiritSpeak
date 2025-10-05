@@ -80,7 +80,7 @@ const Login = () => {
   const isButtonLoading = localIsLoading;
 
   const buttonClasses = `
-    w-[384px] 
+    w-full
     h-[48px]
     mx-auto
     mt-4
@@ -113,7 +113,7 @@ const Login = () => {
           onSubmit={handleSubmit}
         >
           {({ isSubmitting }) => (
-            <Form className="mt-8 space-y-6">
+            <Form className="mt-8 mx-3 space-y-6">
               <div className="space-y-4">
                 <FormikInput
                   name="email"
