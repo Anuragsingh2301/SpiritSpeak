@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import LogoSVG from '../../assets/SVG.svg';
-import { MdDiamond, MdOutlineDiamond } from "react-icons/md";
+import { JournalIcon, CompassIcon, TrophyIcon, UserIcon } from '../../assets/icons';
 
 const navItems = [
-  { name: 'Dashboard', path: '/dashboard' },
-  { name: 'Guides', path: '/guides' },
-  { name: 'Progress', path: '/progress' },
-  { name: 'Profile', path: '/profile' },
+  { name: 'Dashboard', path: '/dashboard', icon: JournalIcon },
+  { name: 'Guides', path: '/guides', icon: CompassIcon },
+  { name: 'Progress', path: '/progress', icon: TrophyIcon },
+  { name: 'Profile', path: '/profile', icon: UserIcon },
 ];
 
 const Sidebar = () => {
@@ -24,6 +24,7 @@ const Sidebar = () => {
       <nav className="flex-1 p-4 space-y-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
+          const Icon = item.icon;
           
           const activeClasses = `
             bg-gradient-to-r from-[#14B7A5] via-[#11A697] to-[#0D968A] text-white shadow-md
@@ -44,19 +45,12 @@ const Sidebar = () => {
                 ${isActive ? activeClasses : inactiveClasses}
               `}
             >
+              {Icon && <Icon className="w-5 h-5 mr-3" />} 
               {item.name}
             </Link>
           );
         })}
       </nav>
-
-      {/* Premium Callout (Fixed at bottom) */}
-      <div className="p-4 border-t border-gray-100">
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded-lg flex items-center space-x-2">
-            <MdDiamond className="text-yellow-500 text-2xl" />
-            <span className="text-sm font-medium">Premium</span>
-        </div>
-      </div>
     </div>
   );
 };

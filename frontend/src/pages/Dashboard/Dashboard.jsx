@@ -1,5 +1,6 @@
 import React from 'react';
 import Reflection from './Reflection'; 
+import MoodChart from './MoodChart';
 import Sidebar from '../Sidebar/Sidebar'; 
 import {  reflections, entries, thoughts, guideInfo  } from '../Guide/GuideData'; 
 import { useNavigate } from 'react-router-dom';
@@ -63,34 +64,6 @@ const PastEntries = () => (
         ))}
     </div>
 );
-
-// Premium Upgrade Callout
-const PremiumUpgrade = () => (
-    <div className="relative min-h-[120px] bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        {/* Background content */}
-        <div className="w-full h-full text-left z-0">
-            <h4 className="text-sm font-semibold text-gray-600 mb-1 p-4">
-                On This Day... (1 year ago)
-            </h4>
-            <p className="text-xs text-gray-500 border-l-2 border-gray-300 pl-2 ml-4">
-                "Feeling really excited about the new semester... SpiritSpeak has some real potential..."
-            </p>
-        </div>
-
-        {/* Glass overlay content */}
-        <div className="absolute inset-0 flex items-center justify-between p-3">
-            <div className="w-full h-full flex items-center justify-between backdrop-blur-[1px] bg-white/40 p-4 rounded-lg border border-white/50">
-                <p className="text-sm font-semibold text-orange-600">
-                    Unlock past reflections with Premium.
-                </p>
-                <button className="px-4 py-1 text-sm font-semibold text-white bg-orange-500 rounded-full hover:bg-orange-600 transition-colors shadow-md">
-                    Upgrade
-                </button>
-            </div>
-        </div>
-    </div>
-);
-
 
 // --- MAIN DASHBOARD COMPONENT ---
 
@@ -158,18 +131,13 @@ const Dashboard = () => {
                             {/* Button to navigate to the journal route */}
                             <div className="mt-28 w-full pt-4">
                                 <button 
-                                    onClick={handleWriteEntryClick} 
+                                    onClick={() => navigate('/journal')} 
                                     className="w-full py-3 text-lg font-semibold text-white bg-[#14B7A5] rounded-lg shadow-md hover:bg-[#11A697] transition-colors"
                                 >
                                     Write Today's Entry
                                 </button>
                             </div>
 
-                        </div>
-                        
-                        {/* Unlock Past Reflections Section */}
-                        <div className="pt-4 space-y-6">
-                            <PremiumUpgrade />
                         </div>
                     </div>
 
@@ -184,7 +152,12 @@ const Dashboard = () => {
                         </div>
                         
                         {/* RENDER RANDOM THOUGHT WIDGET */}
-                        <ThoughtWidget thought={currentThought} guideInfo={guideInfo} />                        
+                        <ThoughtWidget thought={currentThought} guideInfo={guideInfo} />   
+
+                        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
+                            <h2 className="text-xl font-semibold text-gray-800 mb-4">Weekly Mood Overview</h2>
+                            <MoodChart />
+                        </div>                     
                         {/* Past Entries */}
                         <PastEntries />
                     </div>
