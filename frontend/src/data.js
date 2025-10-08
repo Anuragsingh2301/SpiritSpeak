@@ -2,7 +2,7 @@ import { KaiGraphic, ElaraGraphic, OrionGraphic, AethelGraphic } from './assets/
 
 export const guidesData = [
     {
-        id: 'kai',
+        id: 2,
         color: 'bg-sky-100',
         textColor: 'text-sky-800',
         tier: 'free',
@@ -12,7 +12,7 @@ export const guidesData = [
         dailyStory: { title: "Chapter 1: The Unmovable Rock", content: "Kai learned his first lesson not from a person, but from a single rock on the coast. For years, he watched waves crash against it, chipping away tiny pieces, yet it remained. He realized resilience isn't about avoiding damage, but about enduring it and holding your ground.", prompt: "What is one 'wave' you endured today, and how did it show your own strength?" }
     },
     {
-        id: 'elara',
+        id: 1,
         color: 'bg-violet-100',
         textColor: 'text-violet-800',
         tier: 'free',
@@ -22,7 +22,7 @@ export const guidesData = [
         dailyStory: { title: "Starlight Sketch #1: The Shattered Vase", content: "Elara once saw an artist weep over a shattered vase. Instead of discarding the pieces, she showed him how to arrange them into a mosaic, its cracks filled with gold. The new creation was more beautiful for having been broken.", prompt: "What 'broken piece' from your day could become part of a new, more beautiful picture?" }
     },
     {
-        id: 'orion',
+        id: 3,
         color: 'bg-emerald-100',
         textColor: 'text-emerald-800',
         tier: 'free',
@@ -32,7 +32,7 @@ export const guidesData = [
         dailyStory: { title: "Log Entry 734: The Tangled Constellation", content: "Orion faced a star-system so tangled, its paths seemed random. Instead of trying to force a route, he simply observed. For a full cycle, he charted every movement, and soon, the underlying pattern emerged, revealing a clear and simple path forward.", prompt: "What 'tangled' problem could you understand better by simply observing it without judgment?" }
     },
     {
-        id: 'aethel',
+        id: 4,
         color: 'bg-amber-100',
         textColor: 'text-amber-800',
         tier: 'premium',

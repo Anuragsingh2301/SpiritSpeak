@@ -18,6 +18,7 @@ const Register = React.lazy(() => import("./pages/Register/Register"));
 const Profile = React.lazy(() => import("./pages/Profile/Profile"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard/Dashboard"));
 const Journal = React.lazy(() => import("./pages/Journal/journal"));
+const Guide = React.lazy(() => import("./pages/Guide/Guide"));
 
 
 export const routes = [
@@ -48,6 +49,10 @@ export const routes = [
       {
         path: "dashboard",
         element: <Dashboard />,
+      },
+      {
+        path:"guides",
+        element: <Guide />,
       },
       {
         path: "journal",

@@ -2,7 +2,7 @@ import React from 'react';
 import Reflection from './Reflection'; 
 import MoodChart from './MoodChart';
 import Sidebar from '../Sidebar/Sidebar'; 
-import {  reflections, entries, thoughts, guideInfo  } from '../Guide/GuideData'; 
+import {  reflections, entries, thoughts, guideInfo  } from "../Guide/components/GuideData";
 import { useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
 
