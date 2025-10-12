@@ -1,10 +1,10 @@
-import React from 'react';
-import Reflection from './Reflection'; 
-import MoodChart from './MoodChart';
+import Reflection from './components/Reflection'; 
+import MoodChart from './components/MoodChart';
 import Sidebar from '../Sidebar/Sidebar'; 
 import {  reflections, entries, thoughts, guideInfo  } from "../Guide/components/GuideData";
 import { useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
+import GetCurrentUserData from '../../hooks/GetCurrentUserData';
 
 // --- DATA MERGING FUNCTION ---
 
@@ -68,6 +68,12 @@ const PastEntries = () => (
 // --- MAIN DASHBOARD COMPONENT ---
 
 const Dashboard = () => {
+    const {
+        currentUser
+    } = GetCurrentUserData();
+
+    console.log("Current User in Dashboard:", currentUser);
+
     const navigate = useNavigate();
 
     // 1. Logic for Random Reflections (Memoized)
@@ -109,7 +115,7 @@ const Dashboard = () => {
                     {/* 1. LEFT COLUMN */}
                     <div className="w-2/3 pr-10 space-y-6">
                         
-                        <h1 className="text-3xl font-bold text-gray-900">Hello!</h1>
+                        <h1 className="text-3xl font-bold text-gray-900">{`Hello ${currentUser?.name}!`}</h1>
                         <p className="text-gray-500 mb-6">Welcome back to your space.</p>
                         
                         

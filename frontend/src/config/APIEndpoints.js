@@ -3,7 +3,7 @@ const config = {
   endpoints: {
     prod: "",
     dev: "",
-    local: "http://localhost:9900",
+    local: "http://localhost:3000",
   },
   getEndpoint() {
     switch (this.environment) {
@@ -14,7 +14,7 @@ const config = {
       case "production":
         return this.endpoints.prod;
       default:
-        return "http://localhost:9900";
+        return "http://localhost:3000";
     }
   },
 };

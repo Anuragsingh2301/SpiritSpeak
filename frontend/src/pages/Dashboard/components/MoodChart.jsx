@@ -1,5 +1,5 @@
 import React from 'react';
-import { moodHistory } from '../../data';
+import { moodHistory } from '../../../data';
 
 export default function MoodChart() {
     const moodToY = { Sad: 90, Anxious: 75, Okay: 50, Calm: 25, Happy: 10 };

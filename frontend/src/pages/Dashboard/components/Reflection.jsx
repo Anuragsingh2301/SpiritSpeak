@@ -1,7 +1,3 @@
-// src/components/Reflection.jsx
-
-import React from 'react';
-
 const Reflection = ({ guide }) => {
   const { 
     // All properties are now destructured directly from the 'guide' object

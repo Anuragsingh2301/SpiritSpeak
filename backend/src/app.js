@@ -46,11 +46,6 @@ app.get('/', (req, res) => {
         login: 'POST /api/auth/login',
         logout: 'POST /api/auth/logout',
         me: 'GET /api/auth/me',
-        verifyEmail: 'GET /api/auth/verify-email/:token',
-        resendVerification: 'POST /api/auth/resend-verification',
-        forgotPassword: 'POST /api/auth/forgot-password',
-        resetPassword: 'POST /api/auth/reset-password',
-        changePassword: 'POST /api/auth/change-password',
       },
     },
   });
