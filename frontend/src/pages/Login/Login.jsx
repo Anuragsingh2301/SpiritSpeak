@@ -18,6 +18,9 @@ const loginValidationSchema = Yup.object({
     .required("Password is required"),
 });
 
+//this is the login page
+
+
 const Login = () => {
   const navigate = useNavigate();
 
