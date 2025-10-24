@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { guidesData, moods } from '../../data';
 import { WandIcon, MicIcon, ImageIcon } from '../../assets/icons';
 import Sidebar from '../Sidebar/Sidebar';
+import { useCreateJournalEntryMutation, useGetReflectionMutation } from '../../apis/journalApiSlice';
 
 const Journal = () => { 
     const navigate = useNavigate();
@@ -15,24 +16,68 @@ const Journal = () => {
     const [journalText, setJournalText] = useState('');
     const [reflections, setReflections] = useState([]);
     const [selectedMood, setSelectedMood] = useState(null);
+    const [createJournalEntry, { isLoading: isSaving }] = useCreateJournalEntryMutation();
+    const [getReflection, { isLoading: isReflecting }] = useGetReflectionMutation();
     const [activeGuide, setActiveGuide] = useState(selectedGuide);
     const wordCount = journalText.split(/\s+/).filter(Boolean).length;
 
     console.log("Active Guide:", activeGuide);
 
-    const handleGetReflection = () => {
-        const mockReflections = { 
-            kai: "It sounds like today held a mix of challenges and small victories...", 
-            elara: "Your words paint such a vivid picture of your day! It's like you're weaving a tapestry of experiences...", 
-            orion: "Analyzing the events of your day, a clear pattern emerges around your reactions...", 
-            aethel: "The feelings you describe today are like leaves on a branch; let's look at the root they grew from..." 
+    const handleGetReflection = async () => {
+      if (!journalText) {
+        alert("Please write something in your journal first.");
+        return;
+      }
+
+      try {
+        // Call the API with the content and the active guide's ID
+        const result = await getReflection({
+          content: journalText,
+          guideId: activeGuide.id,
+        }).unwrap();
+
+        // Get the AI's text from the response
+        const newText = result.reflection;
+
+        // Create the new reflection object
+        const newReflection = {
+          id: Date.now(),
+          guide: activeGuide,
+          text: newText,
         };
-        const newReflection = { 
-            id: Date.now(), 
-            guide: activeGuide, 
-            text: mockReflections[activeGuide.id] || mockReflections.kai 
-        };
-        setReflections(prev => [newReflection, ...prev]);
+
+        setReflections((prev) => [newReflection, ...prev]);
+      } catch (err) {
+        console.error("Failed to get reflection: ", err);
+        alert(
+          err.data?.message || "Failed to get reflection. Please try again."
+        );
+      }
+    };
+
+    const handleSaveEntry = async () => {
+      // 1. Validate data
+      if (!journalText || !selectedMood) {
+        //can replace this with a toast notification
+        alert("Please write your journal entry and select a mood.");
+        return;
+      }
+  
+      try {
+        // 2. Call the API with the data
+        await createJournalEntry({
+          content: journalText,
+          mood: selectedMood,
+        }).unwrap(); // .unwrap() throws an error if it fails
+  
+        // 3. On success, navigate to the dashboard
+        navigate('/dashboard');
+  
+      } catch (err) {
+        console.error("Failed to save entry: ", err);
+        // Show an error message from your backend
+        alert(err.data?.message || "Failed to save entry. Please try again.");
+      }
     };
 
     return (
@@ -60,18 +105,29 @@ const Journal = () => {
                 </div>
               </div>
               <div className="flex flex-wrap items-center justify-end gap-4 mt-4">
-                <select value={activeGuide.id} onChange={(e) => setActiveGuide(guidesData.find(g => g.id === e.target.value))} className="bg-white border border-stone-300 rounded-lg p-2 font-semibold focus:ring-2 focus:ring-teal-500">
+                <select value={activeGuide.id} onChange={(e) => setActiveGuide(guidesData.find(g => g.id == e.target.value))} className="bg-white border border-stone-300 rounded-lg p-2 font-semibold focus:ring-2 focus:ring-teal-500">
                   {guidesData.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
                 </select>
-                <button onClick={handleGetReflection} className="bg-teal-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-teal-700 transition-all transform hover:scale-105 flex items-center gap-2">
-                  <WandIcon className="w-5 h-5" /> Get {reflections.length > 0 ? 'Another' : ''} Reflection
+                <button 
+                  onClick={handleGetReflection} 
+                  disabled={isReflecting || !journalText} 
+                  className="bg-teal-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-teal-700 transition-all transform hover:scale-105 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <WandIcon className="w-5 h-5" />
+                  {isReflecting ? 'Thinking...' : (reflections.length > 0 ? 'Get Another' : 'Get Reflection')}
                 </button>
               </div>
             </div>
             <div className="space-y-4">
               {reflections.map(r => (<div key={r.id} className={`p-5 rounded-xl shadow-lg ${r.guide.color} ${r.guide.textColor}`}><span className="font-bold text-sm">{r.guide.name} says:</span><p className="mt-1">{r.text}</p></div>))}
             </div>
-            <button onClick={() => navigate('/dashboard')} className="w-full max-w-md mx-auto bg-slate-700 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-slate-800"> Save & Finish Entry </button>
+            <button 
+              onClick={handleSaveEntry} 
+              disabled={isSaving}
+              className="w-full max-w-md mx-auto bg-slate-700 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            > 
+              {isSaving ? "Saving..." : "Save & Finish Entry"} 
+            </button>
           </div>
         </main>
       </div>
