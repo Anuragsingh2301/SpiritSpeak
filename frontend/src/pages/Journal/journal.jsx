@@ -6,10 +6,10 @@ import { WandIcon, MicIcon, ImageIcon } from '../../assets/icons';
 import { useCreateJournalEntryMutation, useGetReflectionMutation } from '../../apis/journalApiSlice';
 
 // --- We now accept 'onClose' as a prop ---
-const Journal = ({ onClose }) => { 
+const Journal = ({ onClose, guideIdFromNav }) => { 
     const navigate = useNavigate();
     const location = useLocation();
-    const guideId = location.state?.guideId || guidesData[0].id;
+    const guideId = guideIdFromNav || location.state?.guideId || guidesData[0].id;
 
     const selectedGuide = guidesData.find(g => g.id == guideId) || guidesData[0];
 

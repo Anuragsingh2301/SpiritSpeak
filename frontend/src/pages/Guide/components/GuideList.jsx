@@ -5,6 +5,7 @@ const GuideListItem = ({ guide, isActive, onSelect }) => {
   const baseClasses = "flex items-center w-full text-left p-3 rounded-lg cursor-pointer transition-colors duration-200";
   const activeClasses = isActive ? "bg-blue-100 text-blue-800" : "hover:bg-gray-100";
 
+  // Color mapping for the rings
   const avatarColors = {
     1: 'border-purple-400', // Elara
     2: 'border-teal-400', // Kai
@@ -15,14 +16,12 @@ const GuideListItem = ({ guide, isActive, onSelect }) => {
   return (
     <button onClick={() => onSelect(guide.id)} className={`${baseClasses} ${activeClasses}`}>
       <div className={`w-8 h-8 rounded-full mr-4 border-2 ${avatarColors[guide.id] || 'border-gray-300'}`}></div>
+
       <span className="font-medium flex-grow">{guide.guideName}</span>
-      {/* Show star for premium/special guides */}
       {guide.id === 4 && <FaStar className="w-4 h-4 text-yellow-500 fill-current" />}
     </button>
   );
 };
-
-// The container for the list
 const GuideList = ({ guides, activeGuideId, onSelectGuide }) => {
   return (
     <div className="w-full md:w-1/3 p-4 border border-gray-200 rounded-xl bg-white">

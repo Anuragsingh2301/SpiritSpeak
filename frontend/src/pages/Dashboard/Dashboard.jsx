@@ -3,8 +3,8 @@ import MoodChart from './components/MoodChart';
 import Sidebar from '../Sidebar/Sidebar'; 
 import { entries, guideInfo  } from "../Guide/components/GuideData";
 import { useGetThoughtOfTheDayQuery } from '../../apis/guidesApiSlice.js';
-import { useNavigate } from 'react-router-dom';
-import { useState, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useState, useMemo, useEffect } from 'react';
 import GetCurrentUserData from '../../hooks/GetCurrentUserData';
 import { useGetJournalEntriesQuery, useGetStreakQuery } from '../../apis/journalApiSlice';
 import LoadingScreen from '../../components/LoadingScreen';
@@ -141,6 +141,16 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [isJournalOpen, setIsJournalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Check if we navigated here with instructions to open the journal
+    if (location.state?.openJournal) {
+      setIsJournalOpen(true);
+      // We clear the state so it doesn't re-open on a dashboard refresh
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
 
   const {
     data: journalData,
@@ -341,7 +351,7 @@ const Dashboard = () => {
             />
 
             <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
                 Weekly Mood Overview
               </h2>
               <MoodChart moodHistory={moodHistory} />
@@ -356,7 +366,10 @@ const Dashboard = () => {
         </div>
       </main>
       <Modal isOpen={isJournalOpen} onClose={() => setIsJournalOpen(false)}>
-        <Journal onClose={() => setIsJournalOpen(false)} />
+        <Journal
+          onClose={() => setIsJournalOpen(false)}
+          guideIdFromNav={location.state?.guideId}
+        />
       </Modal>
       <EntryDetailModal
         isOpen={!!selectedEntry}

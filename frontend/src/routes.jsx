@@ -1,11 +1,8 @@
 import React, { Suspense } from "react";
 import { Navigate, Outlet } from 'react-router-dom'
-
-// imports from components
+import RedirectIfAuth from "./components/RedirectIfAuth";
 import ImplementAuth from "./components/ImplementAuth";
 import LoadingScreen from "./components/LoadingScreen";
-
-// imports from pages
 
 // public pages
 const Hero = React.lazy(() => import("./pages/Dashboard/Dashboard"));
@@ -21,48 +18,40 @@ const Guide = React.lazy(() => import("./pages/Guide/Guide"));
 const Progress = React.lazy(() => import("./pages/Progress/Progress"));
 
 export const routes = [
+  // --- THESE ARE YOUR NEW PUBLIC ROUTES ---
+  // This wrapper will redirect if you are logged in
   {
-    path: "/",
-    element: <Suspense fallback={<LoadingScreen />}><Login /></Suspense>,
-  },
-  {
-    path: "/auth",
-    element: <Suspense fallback={<LoadingScreen />}><Outlet /></Suspense>,
+    path: '/',
+    element: <Suspense fallback={<LoadingScreen />}><RedirectIfAuth /></Suspense>,
     children: [
-      { index: true, element: <Navigate to="/auth/login" replace /> },
-      { path: "login", element: <Login /> },
+      { index: true, element: <Login /> }, // path: '/'
       {
-        path: "register",
-        element: <Register />,
+        path: '/auth',
+        children: [
+          { index: true, element: <Navigate to="/auth/login" replace /> },
+          { path: 'login', element: <Login /> },
+          { path: 'register', element: <Register /> },
+        ],
       },
     ],
   },
+
+  // --- THESE ARE YOUR PROTECTED ROUTES ---
+  // This wrapper will redirect if you are LOGGED OUT
   {
-    path: "/",
+    path: '/',
     element: <Suspense fallback={<LoadingScreen />}><ImplementAuth /></Suspense>,
     children: [
-      {
-        path: "profile", 
-        element: <Profile />,
-      },
-      {
-        path: "dashboard",
-        element: <Dashboard />,
-      },
-      {
-        path:"guides",
-        element: <Guide />,
-      },
-      {
-        path: "progress",
-        element: <Progress />,
-      }
-    ]
+      { path: 'dashboard', element: <Dashboard /> },
+      { path: 'guides', element: <Guide /> },
+      { path: 'progress', element: <Progress /> },
+      { path: 'profile', element: <Profile /> },
+    ],
   },
-  {
-    // Redirect all other paths to a "not found" page or the hero page
-    path: "*",
-    element: <Navigate to="/" replace />
-  }
-];
 
+  // --- FALLBACK ROUTE ---
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
+  },
+];
