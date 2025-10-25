@@ -4,7 +4,7 @@ import Sidebar from '../Sidebar/Sidebar';
 
 const Profile = () => {
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-[#f0efeb]">
       <Sidebar />
 
       <main className="flex-1 p-8 overflow-y-auto">

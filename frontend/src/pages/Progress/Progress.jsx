@@ -22,7 +22,7 @@ const QuestItem = ({ quest }) => (
 export default function ProgressPage() {
     const currentUserXP = 4585;
     return (
-        <div className="flex min-h-screen bg-[#f0efeb]">
+        <div className="flex h-screen overflow-hidden bg-[#f0efeb]">
             <Sidebar />
 
             <main className="flex-1 p-8 overflow-y-auto">

@@ -1,11 +1,29 @@
 import React from 'react';
-import { moodHistory } from '../../../data';
 
-export default function MoodChart() {
-    const moodToY = { Sad: 90, Anxious: 75, Okay: 50, Calm: 25, Happy: 10 };
-    const moodToColor = { Sad: '#9ca3af', Anxious: '#a855f7', Okay: '#facc15', Calm: '#3b82f6', Happy: '#22c55e' };
-    const points = moodHistory.map((item, i) => item.mood ? `${i * 16.66},${moodToY[item.mood]}` : null).filter(Boolean);
-    const pathData = "M " + points.join(" L ");
+// --- ACCEPT moodHistory as a prop ---
+export default function MoodChart({ moodHistory }) {
+
+    const moodToY = { 
+      'Sad': 90, 
+      'Anxious': 75, 
+      'Okay': 50, 
+      'Calm': 25, 
+      'Happy': 10 
+    };
+    const moodToColor = { 
+      'Sad': '#9ca3af', 
+      'Anxious': '#a855f7', 
+      'Okay': '#facc15', 
+      'Calm': '#3b82f6', 
+      'Happy': '#22c55e' 
+    };
+
+    const points = moodHistory.map((item, i) => 
+        item.mood ? `${i * 16.66},${moodToY[item.mood]}` : null
+    ).filter(Boolean);
+
+    // Handle case with 0 or 1 point
+    const pathData = points.length > 1 ? "M " + points.join(" L ") : "";
 
     return (
         <div className="h-32 w-full">
@@ -17,7 +35,7 @@ export default function MoodChart() {
                 })}
             </svg>
             <div className="flex justify-between text-xs font-bold text-slate-500 mt-1">
-                {moodHistory.map(item => <span key={item.day}>{item.day}</span>)}
+                {moodHistory.map((item, i) => <span key={i}>{item.day}</span>)}
             </div>
         </div>
     );

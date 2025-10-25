@@ -19,6 +19,14 @@ const journalEntrySchema = new mongoose.Schema(
       required: [true, 'Please select a mood'],
       enum: ['Happy', 'Calm', 'Okay', 'Anxious', 'Sad'],
     },
+    // This will store the array of AI reflections
+    reflections: [
+      {
+        guideId: String,  // e.g., "1" for Elara
+        guideName: String, // e.g., "Elara, The Creative Muse"
+        text: String,      // The AI-generated text
+      }
+    ],
   },
   {
     timestamps: true, // Adds createdAt and updatedAt

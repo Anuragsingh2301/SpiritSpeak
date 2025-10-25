@@ -17,7 +17,6 @@ const Register = React.lazy(() => import("./pages/Register/Register"));
 // protected pages
 const Profile = React.lazy(() => import("./pages/Profile/Profile"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard/Dashboard"));
-const Journal = React.lazy(() => import("./pages/Journal/journal"));
 const Guide = React.lazy(() => import("./pages/Guide/Guide"));
 const Progress = React.lazy(() => import("./pages/Progress/Progress"));
 
@@ -53,10 +52,6 @@ export const routes = [
       {
         path:"guides",
         element: <Guide />,
-      },
-      {
-        path: "journal",
-        element: <Journal />,
       },
       {
         path: "progress",

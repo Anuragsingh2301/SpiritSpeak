@@ -13,7 +13,7 @@ const Guide = () => {
   const activeGuide = guideInfo.find((g) => g.id === activeGuideId);
 
   return (
-    <div className="flex min-h-screen bg-stone-100">
+    <div className="flex h-screen overflow-hidden bg-[#f0efeb]">
             <Sidebar />
       <main className="w-full max-w-5xl mx-auto bg-white rounded-2xl shadow-sm my-4 p-6 flex flex-col md:flex-row gap-6">
         <GuideList
