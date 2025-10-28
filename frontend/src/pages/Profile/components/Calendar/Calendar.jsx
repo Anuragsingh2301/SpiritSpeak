@@ -46,8 +46,10 @@ export const Calender = () => {
         date.getMonth() + 1
       ).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 
-      // Return the Tailwind class if the date is in our map
-      return dateColors[dateString]?.color;
+      // Get the color for this date
+      const dateData = dateColors[dateString];
+      
+      return dateData?.color;
     }
   };
 

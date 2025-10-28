@@ -33,6 +33,20 @@
 
   /* --- Tile States --- */
 
+  /* Guide color tiles - always show background */
+  .react-calendar__tile.bg-violet-100 {
+    @apply !bg-violet-100;
+  }
+  .react-calendar__tile.bg-sky-100 {
+    @apply !bg-sky-100;
+  }
+  .react-calendar__tile.bg-emerald-100 {
+    @apply !bg-emerald-100;
+  }
+  .react-calendar__tile.bg-amber-100 {
+    @apply !bg-amber-100;
+  }
+
   /* Default hover for days without a specific color */
   .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus {
@@ -44,17 +58,16 @@
     @apply !text-gray-300 bg-gray-50;
   }
 
-  /* Today's Date (it's currently Oct 5, 2025 in our context) */
   .react-calendar__tile--now {
-    @apply !ring-1 !ring-gray-800; /* Adds an inner border */
+    @apply !ring-1 !ring-gray-900;
   }
 
   /* Selected Date */
   .react-calendar__tile--active {
-    @apply !bg-gray-800 !text-white;
+    @apply bg-gray-100 !text-black !ring-1 !ring-gray-300;
   }
   .react-calendar__tile--active:enabled:hover,
   .react-calendar__tile--active:enabled:focus {
-    @apply !bg-gray-900;
+    @apply bg-gray-100;
   }
 }

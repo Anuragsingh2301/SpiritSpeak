@@ -237,7 +237,7 @@ export const getCalendarData = async (req, res, next) => {
       
       // Get the first reflection's guide (if multiple reflections exist, use the first one)
       if (entry.reflections && entry.reflections.length > 0) {
-        const guideId = entry.reflections[0].guideId;
+        const guideId = Number(entry.reflections[0].guideId); // Convert to number
         const guide = guidePersonalities[guideId];
         
         if (guide && guide.colorPalette) {
