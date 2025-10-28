@@ -1,8 +1,7 @@
 import Reflection from './components/Reflection'; 
 import MoodChart from './components/MoodChart';
 import Sidebar from '../Sidebar/Sidebar'; 
-import { entries, guideInfo  } from "../Guide/components/GuideData";
-import { useGetThoughtOfTheDayQuery } from '../../apis/guidesApiSlice.js';
+import { useGetThoughtOfTheDayQuery, useGetAllGuidesQuery } from '../../apis/guidesApiSlice.js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useMemo, useEffect } from 'react';
 import GetCurrentUserData from '../../hooks/GetCurrentUserData';
@@ -143,6 +142,10 @@ const Dashboard = () => {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const location = useLocation();
 
+  // Fetch guides from backend
+  const { data: guidesResponse, isLoading: isLoadingGuides } = useGetAllGuidesQuery();
+  const guideInfo = guidesResponse?.data || [];
+
   useEffect(() => {
     // Check if we navigated here with instructions to open the journal
     if (location.state?.openJournal) {
@@ -243,7 +246,7 @@ const Dashboard = () => {
     setIsJournalOpen(true);
   };
 
-  if (isLoadingEntries) {
+  if (isLoadingEntries || isLoadingGuides) {
     return (
       <div className="flex min-h-screen bg-[#f0efeb]">
         <Sidebar />

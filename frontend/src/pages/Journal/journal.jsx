@@ -1,15 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { guidesData, moods } from '../../data';
+import { moods } from '../../data';
 import { WandIcon, MicIcon, ImageIcon } from '../../assets/icons';
 // --- We NO LONGER import Sidebar ---
 import { useCreateJournalEntryMutation, useGetReflectionMutation, useGetReflectionAttemptsQuery } from '../../apis/journalApiSlice';
+import { useGetAllGuidesQuery } from '../../apis/guidesApiSlice';
 
 // --- We now accept 'onClose' as a prop ---
 const Journal = ({ onClose, guideIdFromNav }) => { 
     const navigate = useNavigate();
     const location = useLocation();
-    const guideId = guideIdFromNav || location.state?.guideId || guidesData[0].id;
+    
+    // Fetch guides from backend
+    const { data: guidesResponse, isLoading: isLoadingGuides } = useGetAllGuidesQuery();
+    const guidesData = guidesResponse?.data || [];
+    
+    const guideId = guideIdFromNav || location.state?.guideId || (guidesData[0]?.id);
 
     const selectedGuide = guidesData.find(g => g.id == guideId) || guidesData[0];
 
@@ -24,6 +30,14 @@ const Journal = ({ onClose, guideIdFromNav }) => {
     const { data: attemptsData, refetch: refetchAttempts } = useGetReflectionAttemptsQuery();
 
     const [activeGuide, setActiveGuide] = useState(selectedGuide);
+    
+    // Update active guide when guides data loads
+    useEffect(() => {
+      if (guidesData.length > 0 && !activeGuide) {
+        setActiveGuide(guidesData.find(g => g.id == guideId) || guidesData[0]);
+      }
+    }, [guidesData, guideId, activeGuide]);
+    
     const wordCount = journalText.split(/\s+/).filter(Boolean).length;
 
     const remainingAttempts = attemptsData?.remainingAttempts ?? 3;
@@ -84,8 +98,8 @@ const Journal = ({ onClose, guideIdFromNav }) => {
           content: journalText,
           mood: selectedMood,
           reflections: [{
-            guideId: reflection.guide.id,
-            guideName: reflection.guide.name,
+            guideId: String(reflection.guide.id),
+            guideName: reflection.guide.guideName || reflection.guide.name,
             text: reflection.text,
           }],
         }).unwrap();
@@ -106,6 +120,24 @@ const Journal = ({ onClose, guideIdFromNav }) => {
         alert(err.data?.message || "Failed to save entry. Please try again.");
       }
     };
+
+    // Show loading state
+    if (isLoadingGuides) {
+      return (
+        <div className="h-full flex items-center justify-center">
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      );
+    }
+
+    // Show error if no guides available
+    if (!guidesData || guidesData.length === 0) {
+      return (
+        <div className="h-full flex items-center justify-center">
+          <p className="text-red-500">Unable to load guides. Please try again later.</p>
+        </div>
+      );
+    }
 
     // --- THE JSX IS NOW SIMPLIFIED (no Sidebar, no main layout) ---
     return (
@@ -153,11 +185,11 @@ const Journal = ({ onClose, guideIdFromNav }) => {
 
           <div className="flex flex-wrap items-center justify-end gap-4 mt-4">
             <select 
-              value={activeGuide.id} 
+              value={activeGuide?.id || ''} 
               onChange={(e) => setActiveGuide(guidesData.find(g => g.id == e.target.value))} 
               className="bg-white border border-stone-300 rounded-lg p-2 font-semibold focus:ring-2 focus:ring-teal-500"
             >
-              {guidesData.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
+              {guidesData.map(g => <option key={g.id} value={g.id}>{g.guideName || g.name}</option>)}
             </select>
             <button 
               onClick={handleGetReflection} 
@@ -173,9 +205,9 @@ const Journal = ({ onClose, guideIdFromNav }) => {
 
         {reflection && (
           <div className="space-y-4 animate-fade-in">
-            <div className={`p-5 rounded-xl shadow-lg ${reflection.guide.color} ${reflection.guide.textColor} transition-all duration-500 ease-in-out`}>
+            <div className={`p-5 rounded-xl shadow-lg ${reflection.guide.frontendColor || reflection.guide.colorPalette?.cardBg} ${reflection.guide.frontendTextColor || reflection.guide.colorPalette?.titleColor} transition-all duration-500 ease-in-out`}>
               <div className="flex justify-between items-start mb-2">
-                <span className="font-bold text-sm">{reflection.guide.name} says:</span>
+                <span className="font-bold text-sm">{reflection.guide.guideName || reflection.guide.name} says:</span>
                 {attemptsUsed > 0 && (
                   <span className="text-xs opacity-70">
                     Attempt {attemptsUsed}/{totalAttempts}

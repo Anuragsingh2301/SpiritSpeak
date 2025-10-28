@@ -3,6 +3,36 @@ import { guidePersonalities } from '../utils/guides.js';
 import DailyContent from '../models/dailyContentModel.js';
 
 /**
+ * @desc    Get all guides information
+ * @route   GET /api/guides
+ * @access  Private
+ */
+export const getAllGuides = async (req, res, next) => {
+  try {
+    // Convert guidePersonalities object to array and return safe data
+    const guides = Object.values(guidePersonalities).map(guide => ({
+      id: guide.id,
+      guideName: guide.guideName,
+      name: guide.name,
+      primaryFocus: guide.primaryFocus,
+      detailedBio: guide.detailedBio,
+      tier: guide.tier,
+      colorPalette: guide.colorPalette,
+      frontendColor: guide.frontendColor,
+      frontendTextColor: guide.frontendTextColor,
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: guides,
+    });
+  } catch (error) {
+    console.error('Get All Guides Error:', error);
+    next(error);
+  }
+};
+
+/**
  * @desc    Get a random AI-generated "Thought of the Day"
  * @route   GET /api/guides/thought-of-the-day
  * @access  Private

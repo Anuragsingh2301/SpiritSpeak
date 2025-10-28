@@ -5,6 +5,7 @@ import {
   getReflection,
   getStreak,
   getReflectionAttempts,
+  getCalendarData,
 } from '../controllers/journalController.js';
 import { isAuthenticated } from '../middleware/auth.js'; // From your auth setup
 
@@ -14,6 +15,7 @@ const router = express.Router();
 router.use(isAuthenticated);
 router.get('/streak', getStreak);
 router.get('/reflection-attempts', getReflectionAttempts);
+router.get('/calendar', getCalendarData);
 
 // /api/journal
 router

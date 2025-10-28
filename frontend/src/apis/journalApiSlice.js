@@ -23,7 +23,7 @@ export const journalApiSlice = APISlice.injectEndpoints({
         body: entryData, // { content: "...", mood: "..." }
       }),
       // Invalidates the 'Journal' tag, forcing a refetch of all entries
-      invalidatesTags: [journalTag, 'Streak'],
+      invalidatesTags: [journalTag, 'Streak', 'Calendar'],
     }),
 
     getReflection: builder.mutation({
@@ -45,6 +45,11 @@ export const journalApiSlice = APISlice.injectEndpoints({
       query: () => "/api/journal/reflection-attempts",
       providesTags: ["ReflectionAttempts"],
     }),
+
+    getCalendarData: builder.query({
+      query: () => "/api/journal/calendar",
+      providesTags: ["Calendar"],
+    }),
   }),
 });
 
@@ -55,4 +60,5 @@ export const {
   useGetReflectionMutation,
   useGetStreakQuery,
   useGetReflectionAttemptsQuery,
+  useGetCalendarDataQuery,
 } = journalApiSlice;

@@ -219,3 +219,43 @@ export const getReflectionAttempts = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * @desc    Get calendar data with guide colors for each day
+ * @route   GET /api/journal/calendar
+ * @access  Private
+ */
+export const getCalendarData = async (req, res, next) => {
+  try {
+    const entries = await JournalEntry.find({ user: req.session.userId });
+    
+    // Create a map of dates to guide colors
+    const calendarData = {};
+    
+    entries.forEach(entry => {
+      const dateString = new Date(entry.createdAt).toISOString().split('T')[0]; // YYYY-MM-DD
+      
+      // Get the first reflection's guide (if multiple reflections exist, use the first one)
+      if (entry.reflections && entry.reflections.length > 0) {
+        const guideId = entry.reflections[0].guideId;
+        const guide = guidePersonalities[guideId];
+        
+        if (guide && guide.colorPalette) {
+          calendarData[dateString] = {
+            guideId: guideId,
+            guideName: guide.guideName,
+            color: guide.colorPalette.calendarBg || guide.frontendColor,
+          };
+        }
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      data: calendarData,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
