@@ -32,11 +32,18 @@ export const journalApiSlice = APISlice.injectEndpoints({
         method: "POST",
         body: data, // { content: "...", guideId: "..." }
       }),
+      // Invalidate reflection attempts to refetch the updated count
+      invalidatesTags: ['ReflectionAttempts'],
     }),
 
     getStreak: builder.query({
       query: () => "/api/journal/streak",
       providesTags: ["Streak"],
+    }),
+
+    getReflectionAttempts: builder.query({
+      query: () => "/api/journal/reflection-attempts",
+      providesTags: ["ReflectionAttempts"],
     }),
   }),
 });
@@ -47,4 +54,5 @@ export const {
   useCreateJournalEntryMutation,
   useGetReflectionMutation,
   useGetStreakQuery,
+  useGetReflectionAttemptsQuery,
 } = journalApiSlice;

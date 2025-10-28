@@ -1,9 +1,11 @@
 import { TbBrandTorchain } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useGetGuideLoreQuery } from '../../../apis/guidesApiSlice';
+import Modal from '../../../components/ui/Modal';
+import Journal from '../../Journal/journal';
 
 const GuideDetail = ({ guide }) => {
-  const navigate = useNavigate();
+  const [isJournalOpen, setIsJournalOpen] = useState(false);
   
   const { 
     data: loreData, 
@@ -32,12 +34,7 @@ const GuideDetail = ({ guide }) => {
   }
 
   const handleChatClick = () => {
-    navigate('/dashboard', { 
-      state: { 
-        openJournal: true,
-        guideId: guide.id 
-      } 
-    });
+    setIsJournalOpen(true);
   };
 
   return (
@@ -84,6 +81,14 @@ const GuideDetail = ({ guide }) => {
           Chat with {guide.guideName}
         </button>
       </div>
+
+      {/* Journal Modal */}
+      <Modal isOpen={isJournalOpen} onClose={() => setIsJournalOpen(false)}>
+        <Journal
+          onClose={() => setIsJournalOpen(false)}
+          guideIdFromNav={guide.id}
+        />
+      </Modal>
     </div>
   );
 };

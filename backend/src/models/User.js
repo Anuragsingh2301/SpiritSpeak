@@ -29,6 +29,16 @@ const userSchema = new mongoose.Schema(
     lastLogin: {
       type: Date,
     },
+    dailyReflections: {
+      date: {
+        type: String,
+        default: null,
+      },
+      count: {
+        type: Number,
+        default: 0,
+      },
+    },
   },
   {
     timestamps: true, // Adds createdAt and updatedAt fields
@@ -59,6 +69,46 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   } catch (error) {
     throw new Error("Password comparison failed");
   }
+};
+
+// Method to check and update daily reflection attempts
+userSchema.methods.canGenerateReflection = function () {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const DAILY_LIMIT = 3;
+
+  // Reset counter if it's a new day
+  if (this.dailyReflections.date !== today) {
+    this.dailyReflections.date = today;
+    this.dailyReflections.count = 0;
+  }
+
+  return this.dailyReflections.count < DAILY_LIMIT;
+};
+
+// Method to increment reflection count
+userSchema.methods.incrementReflectionCount = function () {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+  // Reset counter if it's a new day
+  if (this.dailyReflections.date !== today) {
+    this.dailyReflections.date = today;
+    this.dailyReflections.count = 0;
+  }
+
+  this.dailyReflections.count += 1;
+};
+
+// Method to get remaining attempts
+userSchema.methods.getRemainingAttempts = function () {
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const DAILY_LIMIT = 3;
+
+  // Reset counter if it's a new day
+  if (this.dailyReflections.date !== today) {
+    return DAILY_LIMIT;
+  }
+
+  return DAILY_LIMIT - this.dailyReflections.count;
 };
 
 // Method to generate safe user object (without sensitive data)

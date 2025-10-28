@@ -1,4 +1,5 @@
 import JournalEntry from '../models/journalEntryModel.js';
+import User from '../models/User.js';
 import { aiModel } from '../config/ai.js';
 import { guidePersonalities } from '../utils/guides.js';
 
@@ -73,7 +74,27 @@ export const getReflection = async (req, res, next) => {
       });
     }
 
-    // 1. Get the guide's personality
+    // 1. Get the user and check daily limit
+    const user = await User.findById(req.session.userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    // 2. Check if user can generate reflection
+    if (!user.canGenerateReflection()) {
+      const remainingAttempts = user.getRemainingAttempts();
+      return res.status(429).json({
+        success: false,
+        message: 'Daily reflection limit reached. Try again tomorrow!',
+        remainingAttempts,
+      });
+    }
+
+    // 3. Get the guide's personality
     const guide = guidePersonalities[guideId];
 
     if (!guide) {
@@ -83,18 +104,24 @@ export const getReflection = async (req, res, next) => {
       });
     }
 
-    // 2. Construct the full prompt
+    // 4. Construct the full prompt
     const fullPrompt = `${guide.prompt}\n"${content}"`;
 
-    // 3. Call the Gemini API
+    // 5. Call the Gemini API
     const result = await aiModel.generateContent(fullPrompt);
     const response = result.response;
     const reflectionText = response.text();
 
-    // 4. Send the AI-generated text back
+    // 6. Increment the user's reflection count
+    user.incrementReflectionCount();
+    await user.save();
+
+    // 7. Send the AI-generated text back with remaining attempts
     res.status(200).json({
       success: true,
       reflection: reflectionText,
+      remainingAttempts: user.getRemainingAttempts(),
+      attemptsUsed: user.dailyReflections.count,
     });
 
   } catch (error) {
@@ -156,6 +183,37 @@ export const getStreak = async (req, res, next) => {
     }
 
     res.status(200).json({ success: true, streak });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * @desc    Get remaining reflection attempts for today
+ * @route   GET /api/journal/reflection-attempts
+ * @access  Private
+ */
+export const getReflectionAttempts = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.session.userId);
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    const remainingAttempts = user.getRemainingAttempts();
+    const DAILY_LIMIT = 3;
+
+    res.status(200).json({
+      success: true,
+      remainingAttempts,
+      totalAttempts: DAILY_LIMIT,
+      attemptsUsed: DAILY_LIMIT - remainingAttempts,
+    });
 
   } catch (error) {
     next(error);
