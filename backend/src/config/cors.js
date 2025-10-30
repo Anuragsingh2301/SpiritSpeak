@@ -3,6 +3,7 @@ const corsOptions = {
     // Allow requests from the configured frontend URL
     const allowedOrigins = [
       process.env.FRONTEND_URL,
+      'https://spirit-speak-chi.vercel.app/',
       'http://localhost:5173',
     ].filter(Boolean);
 
