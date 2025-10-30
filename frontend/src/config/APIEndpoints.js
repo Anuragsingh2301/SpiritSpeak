@@ -1,7 +1,7 @@
 const config = {
   environment: import.meta.env.VITE_APP_ENV || "local",
   endpoints: {
-    prod: "https://spirit-speak-lwbo.vercel.app/",
+    prod: import.meta.env.VITE_APP_BACKEND_URL || "",
     dev: "",
     local: "http://localhost:3000",
   },
