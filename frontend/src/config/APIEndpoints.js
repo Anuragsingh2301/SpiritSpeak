@@ -1,7 +1,7 @@
 const config = {
   environment: import.meta.env.REACT_APP_ENV || "local",
   endpoints: {
-    prod: "https://spirit-speak-aarm.vercel.app/",
+    prod: "https://spirit-speak-lwbo.vercel.app/",
     dev: "",
     local: "http://localhost:3000",
   },
