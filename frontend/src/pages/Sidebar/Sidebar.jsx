@@ -3,6 +3,8 @@ import LogoSVG from '../../assets/SVG.svg';
 import { JournalIcon, CompassIcon, TrophyIcon, UserIcon } from '../../assets/icons';
 import { FiLogOut } from 'react-icons/fi';
 import { useLogoutMutation } from '../../apis/auth/AuthApiSlice';
+import { useDispatch } from 'react-redux';
+import { APISlice } from '../../apis/APISlice';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: JournalIcon },
@@ -14,12 +16,16 @@ const navItems = [
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [logout] = useLogoutMutation();
 
   const handleLogout = async () => {
     try {
       await logout().unwrap();
-      navigate('/auth/login');
+      // Reset all API cache after successful logout
+      dispatch(APISlice.util.resetApiState());
+      console.log('Logout successful');
+      navigate('auth/login', { replace: true });
     } catch (error) {
       console.error('Logout failed:', error);
     }
