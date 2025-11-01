@@ -16,3 +16,5 @@ export { ImageIcon } from './ImageIcon';
 export { DownloadIcon } from './DownloadIcon';
 export { ChevronLeftIcon } from './ChevronLeftIcon';
 export { ChevronRightIcon } from './ChevronRightIcon';
+export { EyeIcon } from './EyeIcon';
+export { EyeSlashIcon } from './EyeSlashIcon';
