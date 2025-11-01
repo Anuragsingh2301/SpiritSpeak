@@ -5,6 +5,7 @@ import { WandIcon, MicIcon, ImageIcon } from '../../assets/icons';
 // --- We NO LONGER import Sidebar ---
 import { useCreateJournalEntryMutation, useGetReflectionMutation, useGetReflectionAttemptsQuery } from '../../apis/journalApiSlice';
 import { useGetAllGuidesQuery } from '../../apis/guidesApiSlice';
+import { useQuestTracking } from '../../hooks/useQuestTracking';
 
 // --- We now accept 'onClose' as a prop ---
 const Journal = ({ onClose, guideIdFromNav }) => { 
@@ -28,6 +29,9 @@ const Journal = ({ onClose, guideIdFromNav }) => {
     
     // Fetch reflection attempts from backend
     const { data: attemptsData, refetch: refetchAttempts } = useGetReflectionAttemptsQuery();
+
+    // Quest tracking hook
+    const { trackJournalEntry, trackMoodLog } = useQuestTracking();
 
     const [activeGuide, setActiveGuide] = useState(selectedGuide);
     
@@ -77,8 +81,20 @@ const Journal = ({ onClose, guideIdFromNav }) => {
         
       } catch (err) {
         console.error("Failed to get reflection: ", err);
-        const errorMessage = err.data?.message || err.error || "Failed to get reflection. Please try again.";
-        alert(errorMessage);
+        
+        // Handle specific error types
+        if (err.data?.error === 'QUOTA_EXCEEDED') {
+          alert('⚠️ AI Service Quota Exceeded\n\n' + 
+                'The AI service has reached its usage limit. This happens when using the free tier.\n\n' +
+                'Solutions:\n' +
+                '1. Wait a few hours for the quota to reset\n' +
+                '2. Get a new API key from https://aistudio.google.com/app/apikey\n' +
+                '3. Upgrade to a paid plan for higher limits\n\n' +
+                'You can still save your journal entry without a reflection.');
+        } else {
+          const errorMessage = err.data?.message || err.error || "Failed to get reflection. Please try again.";
+          alert(errorMessage);
+        }
       }
     };
 
@@ -103,6 +119,10 @@ const Journal = ({ onClose, guideIdFromNav }) => {
             text: reflection.text,
           }],
         }).unwrap();
+
+        // Track quest completions
+        await trackJournalEntry();
+        await trackMoodLog();
 
         // Reset form
         setJournalText('');

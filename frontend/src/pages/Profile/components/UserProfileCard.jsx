@@ -1,4 +1,6 @@
 import { FaCheck, FaDownload, FaFire, FaLock, FaSeedling, FaShieldAlt, FaStar, FaTrophy, FaWpbeginner } from "react-icons/fa";
+import GetCurrentUserData from "../../../hooks/GetCurrentUserData";
+import { useGetXPDataQuery } from "../../../apis/xpApiSlice";
 
 // --- Reusable Components for Card Sections ---
 
@@ -16,16 +18,32 @@ const DottedSeparator = () => <div className="border-t-2 border-dotted border-gr
 // --- Main Profile Card Component ---
 
 export default function UserProfileCard() {
+  const { currentUser } = GetCurrentUserData();
+  const { data: xpData } = useGetXPDataQuery();
+
+  // Extract dynamic data
+  const username = currentUser?.name || 'User';
+  const joinYear = currentUser?.createdAt ? new Date(currentUser.createdAt).getFullYear() : new Date().getFullYear();
+  const currentStreak = xpData?.data?.consecutiveLoginDays || 0;
+  const totalXP = xpData?.data?.totalXP || 0;
+  const unlockedAchievements = xpData?.data?.achievements?.filter(a => a.unlocked)?.length || 0;
+  
+  // Use global quest count from backend
+  const totalQuestsCompleted = xpData?.data?.totalQuestsCompleted || 0;
+  
+  // Format username: lowercase, remove spaces, add @ at front
+  const formattedUsername = '@' + username.toLowerCase().replace(/\s+/g, '');
+
   return (
       <div className="max-w-sm w-full bg-white p-6 border-none rounded-xl shadow-lg">
         
         {/* Header Section */}
         <div className="flex flex-col items-center">
           <div className="w-24 h-24 bg-teal-400 rounded-full flex items-center justify-center mb-3">
-            <span className="text-5xl font-bold text-white">A</span>
+            <span className="text-5xl font-bold text-white">{username.charAt(0).toUpperCase()}</span>
           </div>
           <p className="text-gray-600">
-            <span className="font-bold text-gray-800">@AJRAGNAROK</span> • Joined 2025
+            <span className="font-bold text-gray-800">{formattedUsername}</span> • Joined {joinYear}
           </p>
         </div>
 
@@ -39,22 +57,22 @@ export default function UserProfileCard() {
           <div className="grid grid-cols-2 gap-4">
             <StatCard 
               icon={<FaFire className="w-7 h-7 text-orange-400 mb-1" />} 
-              value="7 Days" 
+              value={`${currentStreak} Days`}
               label="Current Streak" 
             />
             <StatCard 
               icon={<FaStar className="w-7 h-7 text-yellow-400 mb-1" />} 
-              value="4,585" 
+              value={totalXP.toLocaleString()}
               label="Total XP" 
             />
             <StatCard 
               icon={<FaCheck className="w-7 h-7 text-purple-500 mb-1" />} 
-              value="23" 
+              value={totalQuestsCompleted}
               label="Quests Done" 
             />
             <StatCard 
               icon={<FaTrophy className="w-7 h-7 text-red-500 mb-1" />} 
-              value="5" 
+              value={unlockedAchievements}
               label="Achievements" 
             />
             <StatCard 

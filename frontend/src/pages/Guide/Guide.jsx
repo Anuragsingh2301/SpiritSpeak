@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GuideList from './components/GuideList';
 import GuideDetail from './components/GuideDetail';
 import { useGetAllGuidesQuery } from '../../apis/guidesApiSlice';
+import { useTrackGuideUsageMutation } from '../../apis/xpApiSlice';
 import Sidebar from '../Sidebar/Sidebar';
 import LoadingScreen from '../../components/LoadingScreen';
 
@@ -12,7 +13,16 @@ const Guide = () => {
   const { data: guidesResponse, isLoading, isError } = useGetAllGuidesQuery();
   const guideInfo = guidesResponse?.data || [];
   
+  const [trackGuideUsage] = useTrackGuideUsageMutation();
+  
   const activeGuide = guideInfo.find((g) => g.id === activeGuideId);
+
+  // Track guide usage when guide is selected
+  useEffect(() => {
+    if (activeGuideId) {
+      trackGuideUsage({ guideId: activeGuideId });
+    }
+  }, [activeGuideId, trackGuideUsage]);
 
   if (isLoading) {
     return (

@@ -10,6 +10,7 @@ import LoadingScreen from '../../components/LoadingScreen';
 import Modal from '../../components/ui/Modal';
 import Journal from '../Journal/journal';
 import EntryDetailModal from './components/EntryDetailModal';
+import { useQuestTracking } from '../../hooks/useQuestTracking';
 
 const truncateText = (text, maxLength) => {
   if (text.length <= maxLength) return text;
@@ -141,6 +142,9 @@ const Dashboard = () => {
   const [isJournalOpen, setIsJournalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
   const location = useLocation();
+  
+  // Initialize quest tracking (handles login XP automatically)
+  useQuestTracking();
 
   // Fetch guides from backend
   const { data: guidesResponse, isLoading: isLoadingGuides } = useGetAllGuidesQuery();

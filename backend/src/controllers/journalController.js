@@ -28,7 +28,29 @@ export const createJournalEntry = async (req, res, next) => {
       user: req.session.userId, // Attach to the logged-in user!
     });
 
-    // 3. Send success response
+    // 3. Track journal entry and mood in user progress
+    const user = await User.findById(req.session.userId);
+    if (user) {
+      const wordCount = content.split(/\s+/).filter(word => word.length > 0).length;
+      
+      // Track daily journal with word count (for quest validation)
+      user.trackDailyJournal(wordCount);
+      
+      // Track weekly and total stats
+      user.trackJournalEntry(wordCount);
+      
+      if (mood) {
+        user.trackMoodLog();
+      }
+      // Track reflection if journal entry includes AI-generated reflections
+      if (reflections && reflections.length > 0) {
+        user.trackReflection(); // Weekly tracking
+        user.trackDailyReflection(); // Daily tracking for quests
+      }
+      await user.save();
+    }
+
+    // 4. Send success response
     res.status(201).json({
       success: true,
       data: entry,
@@ -67,6 +89,12 @@ export const getReflection = async (req, res, next) => {
   try {
     const { content, guideId } = req.body;
 
+    console.log('🔍 Reflection request received:', { 
+      contentLength: content?.length, 
+      guideId, 
+      guideIdType: typeof guideId 
+    });
+
     if (!content || !guideId) {
       return res.status(400).json({
         success: false,
@@ -94,26 +122,81 @@ export const getReflection = async (req, res, next) => {
       });
     }
 
-    // 3. Get the guide's personality
-    const guide = guidePersonalities[guideId];
+    // 3. Get the guide's personality - ensure guideId is a number
+    const numericGuideId = typeof guideId === 'string' ? parseInt(guideId) : guideId;
+    const guide = guidePersonalities[numericGuideId];
+
+    console.log('🧭 Looking for guide:', numericGuideId, 'Found:', guide?.name);
 
     if (!guide) {
       return res.status(404).json({
         success: false,
-        message: 'Invalid guide selected',
+        message: `Invalid guide selected. Guide ID ${guideId} not found.`,
+        availableGuides: Object.keys(guidePersonalities)
       });
     }
 
     // 4. Construct the full prompt
     const fullPrompt = `${guide.prompt}\n"${content}"`;
 
-    // 5. Call the Gemini API
-    const result = await aiModel.generateContent(fullPrompt);
-    const response = result.response;
-    const reflectionText = response.text();
+    // 5. Call the Gemini API with error handling
+    let reflectionText;
+    try {
+      console.log('📝 Calling Gemini API with guide:', guide.name);
+      console.log('📝 Prompt length:', fullPrompt.length);
+      
+      const result = await aiModel.generateContent(fullPrompt);
+      
+      console.log('✅ Gemini API response received');
+      
+      if (!result || !result.response) {
+        throw new Error('Invalid response from Gemini API');
+      }
+      
+      const response = result.response;
+      reflectionText = response.text();
+      
+      console.log('✅ Reflection generated, length:', reflectionText.length);
+    } catch (aiError) {
+      console.error('❌ Gemini API Error:', aiError);
+      console.error('❌ Error details:', {
+        message: aiError.message,
+        status: aiError.status,
+        statusText: aiError.statusText,
+        name: aiError.name
+      });
+      
+      // Check if it's a rate limit error
+      if (aiError.message && (aiError.message.includes('quota') || aiError.message.includes('429'))) {
+        return res.status(429).json({
+          success: false,
+          message: 'Our AI service is temporarily at capacity. Please try again in a few minutes, or you can get a new API key from https://aistudio.google.com/app/apikey and update your .env file.',
+          error: 'QUOTA_EXCEEDED',
+        });
+      }
+      
+      // Check for safety/blocked content errors
+      if (aiError.message && (aiError.message.includes('SAFETY') || aiError.message.includes('blocked'))) {
+        return res.status(400).json({
+          success: false,
+          message: 'The content was flagged by our safety filters. Please try rephrasing your journal entry.',
+          error: 'CONTENT_BLOCKED',
+        });
+      }
+      
+      // Other API errors
+      return res.status(503).json({
+        success: false,
+        message: `AI service error: ${aiError.message || 'Unknown error'}. Please try again later.`,
+        error: 'AI_SERVICE_ERROR',
+        details: aiError.message
+      });
+    }
 
-    // 6. Increment the user's reflection count
+    // 6. Increment the user's reflection count (for daily limit tracking only)
     user.incrementReflectionCount();
+    // NOTE: Do NOT track reflection for quest progress here
+    // It will be tracked when the journal entry is saved with aiReflection
     await user.save();
 
     // 7. Send the AI-generated text back with remaining attempts

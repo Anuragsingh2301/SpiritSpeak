@@ -5,6 +5,7 @@ const corsOptions = {
       process.env.FRONTEND_URL,
       'https://spirit-speak-chi.vercel.app',
       'http://localhost:5173',
+      'http://localhost:5174',
     ].filter(Boolean);
 
     // Allow requests with no origin (like mobile apps or Postman)

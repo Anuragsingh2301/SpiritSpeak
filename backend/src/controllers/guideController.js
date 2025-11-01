@@ -59,12 +59,26 @@ export const getThoughtOfTheDay = async (req, res, next) => {
     `;
 
     // 3. Call the Gemini API
-    const result = await aiModel.generateContent(fullPrompt);
-    const response = await result.response;
-    let quote = response.text();
-
-    // 4. Clean up the quote (remove quotes, asterisks, etc.)
-    quote = quote.replace(/["*]/g, '').trim();
+    let quote;
+    try {
+      const result = await aiModel.generateContent(fullPrompt);
+      const response = await result.response;
+      quote = response.text();
+      
+      // Clean up the quote (remove quotes, asterisks, etc.)
+      quote = quote.replace(/["*]/g, '').trim();
+    } catch (aiError) {
+      console.error('Gemini API Error in Thought of the Day:', aiError);
+      
+      // Return a fallback quote if API fails
+      const fallbackQuotes = [
+        "Every journey begins with a single step, yet the path reveals itself to those who dare to walk it.",
+        "In stillness, we find the answers that chaos conceals.",
+        "Wisdom is not the absence of doubt, but the courage to question.",
+        "The greatest adventure lies not in seeking new landscapes, but in seeing with new eyes.",
+      ];
+      quote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+    }
 
     // 5. Send the response
     res.status(200).json({
