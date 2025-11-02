@@ -12,7 +12,7 @@ import routes from './routes/index.js';
 
 const app = express();
 
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet()); // Set security headers
