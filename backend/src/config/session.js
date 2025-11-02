@@ -16,7 +16,7 @@ const sessionConfig = {
     maxAge: parseInt(process.env.SESSION_MAX_AGE) || 86400000, // 24 hours
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production', // Only send cookie over HTTPS in production
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   },
 };
 

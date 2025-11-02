@@ -3,9 +3,8 @@ const corsOptions = {
     // Allow requests from the configured frontend URL
     const allowedOrigins = [
       process.env.FRONTEND_URL,
-      'https://spirit-speak-chi.vercel.app',
+      'https://spirit-speak-jet.vercel.app',
       'http://localhost:5173',
-      'http://localhost:5174',
     ].filter(Boolean);
 
     // Allow requests with no origin (like mobile apps or Postman)
