@@ -46,7 +46,8 @@ const GuideDetail = ({ guide }) => {
           alt={guide.guideName}
           className="w-full h-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end p-4">
+        <div className="absolute inset-0 bg-black opacity-30"></div>
+        <div className="absolute inset-0 flex items-end p-4">
           <h2 className="text-3xl font-bold text-white mb-1">{guide.guideName}</h2>
         </div>
       </div>
