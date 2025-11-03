@@ -91,45 +91,6 @@ export default function UserProfileCard() {
             />
           </div>
         </div>
-
-        <DottedSeparator />
-
-        {/* Monthly Badges Section */}
-        <div>
-          <h2 className="text-sm font-bold tracking-wider text-gray-500 uppercase mb-4">
-            Monthly Badges
-          </h2>
-          <div className="flex justify-around items-center">
-            {/* Active Badge */}
-            <div className="flex flex-col items-center">
-              <div className="w-14 h-14 bg-teal-400 rounded-full flex items-center justify-center">
-                <FaSeedling className="w-8 h-8 text-white" />
-              </div>
-              <span className="mt-2 text-sm font-bold text-teal-500">Sep</span>
-            </div>
-
-            {/* Locked Badges */}
-            <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
-              <FaLock className="w-7 h-7 text-gray-400" />
-            </div>
-            <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
-              <FaLock className="w-7 h-7 text-gray-400" />
-            </div>
-            <div className="w-14 h-14 bg-gray-200 rounded-full flex items-center justify-center">
-              <FaLock className="w-7 h-7 text-gray-400" />
-            </div>
-          </div>
-        </div>
-
-        <DottedSeparator />
-
-        {/* Footer Section */}
-        <div className="text-center">
-          <button className="flex items-center justify-center w-full text-blue-500 font-semibold hover:text-blue-700 transition-colors">
-            <FaDownload className="w-5 h-5 mr-2" />
-            Export All Entries
-          </button>
-        </div>
       </div>
   );
 }
