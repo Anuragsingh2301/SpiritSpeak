@@ -36,36 +36,46 @@ const DEFAULT_ACHIEVEMENTS = [
 
 const QuestItem = ({ quest, questType, onComplete }) => {
     const handleClick = () => {
-        if (!quest.completed) {
-            onComplete(quest.id, questType, quest.xp);
-        }
+        // Always allow clicking - backend will validate
+        onComplete(quest.id, questType, quest.xp);
     };
 
-    const isCompleted = quest.completed;
+    const isClaimable = quest.completed;
 
     return (
         <div 
-            className={`p-4 rounded-lg flex items-center justify-between transition-all ${
-                isCompleted 
-                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 shadow-md' 
-                    : 'bg-purple-50 border-2 border-purple-200 hover:shadow-md hover:scale-[1.02] cursor-pointer hover:border-purple-400'
+            className={`p-4 rounded-lg flex items-center justify-between transition-all cursor-pointer ${
+                isClaimable 
+                    ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 shadow-md hover:shadow-lg hover:scale-[1.02]' 
+                    : 'bg-purple-50 border-2 border-purple-200 hover:shadow-md hover:scale-[1.02] hover:border-purple-400'
             }`}
             onClick={handleClick}
-            title={!isCompleted ? 'Click to complete this quest' : 'Quest completed!'}
+            title={isClaimable ? '🎉 Click to claim your XP reward!' : 'Complete this quest to unlock'}
         >
             <div className="flex items-center gap-4 flex-1">
-                {isCompleted ? (
-                    <div className="relative">
-                        <CheckCircleIcon className="text-green-600 w-8 h-8 flex-shrink-0 animate-pulse" />
-                        <span className="absolute -top-1 -right-1 text-xs">✓</span>
+                {isClaimable ? (
+                    <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-green-500 border-2 border-green-600 flex-shrink-0 animate-bounce">
+                        <svg 
+                            className="w-5 h-5 text-white" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                        >
+                            <path 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                strokeWidth={3} 
+                                d="M5 13l4 4L19 7"
+                            />
+                        </svg>
                     </div>
                 ) : (
                     <div className="w-8 h-8 rounded-full bg-purple-300 flex-shrink-0 border-2 border-purple-400 hover:bg-purple-400 transition-colors"></div>
                 )}
                 <div className="flex-1">
-                    <p className={`font-semibold ${isCompleted ? 'text-green-800' : 'text-purple-900'}`}>
+                    <p className={`font-semibold ${isClaimable ? 'text-green-800' : 'text-purple-900'}`}>
                         {quest.title}
-                        {isCompleted && <span className="ml-2 text-green-600 text-sm font-bold">✓ COMPLETED</span>}
+                        {isClaimable && <span className="ml-2 text-green-600 text-sm font-bold animate-pulse">🎉 CLICK TO CLAIM!</span>}
                     </p>
                     {/* Only show progress bar for weekly quests */}
                     {quest.progress !== undefined && questType === 'weekly' && (
@@ -74,13 +84,13 @@ const QuestItem = ({ quest, questType, onComplete }) => {
                                 <div className="flex-1 bg-gray-200 rounded-full h-2 max-w-[200px]">
                                     <div 
                                         className={`h-2 rounded-full transition-all ${
-                                            isCompleted ? 'bg-green-500' : 'bg-purple-500'
+                                            isClaimable ? 'bg-green-500' : 'bg-purple-500'
                                         }`}
                                         style={{ width: `${(quest.progress / quest.target) * 100}%` }}
                                     ></div>
                                 </div>
                                 <p className={`text-xs font-medium ${
-                                    isCompleted ? 'text-green-700' : 'text-gray-600'
+                                    isClaimable ? 'text-green-700' : 'text-gray-600'
                                 }`}>
                                     {quest.progress}/{quest.target}
                                 </p>
@@ -90,7 +100,7 @@ const QuestItem = ({ quest, questType, onComplete }) => {
                 </div>
             </div>
             <div className={`flex items-center gap-1 font-bold px-3 py-1.5 rounded-full ${
-                isCompleted ? 'text-green-700 bg-green-200 border-2 border-green-400' : 'text-yellow-600 bg-yellow-100'
+                isClaimable ? 'text-green-700 bg-green-200 border-2 border-green-400' : 'text-yellow-600 bg-yellow-100'
             }`}>
                 <XPIcon className="w-4 h-4" />
                 <span>{quest.xp} XP</span>

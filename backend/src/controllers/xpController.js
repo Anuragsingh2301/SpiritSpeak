@@ -615,7 +615,7 @@ function filterAchievementsToDisplay(achievements) {
 }
 
 /**
- * Calculate current progress for all quests
+ * Calculate current progress for all quests AND auto-mark as completed when requirements are met
  */
 async function calculateQuestProgress(user) {
   const JournalEntry = (await import('../models/journalEntryModel.js')).default;
@@ -627,13 +627,28 @@ async function calculateQuestProgress(user) {
     weekly: [...(user.quests.weekly || [])]
   };
   
-  // Update progress for weekly quests
+  // Update progress AND check completion for daily quests
+  for (let quest of quests.daily) {
+    if (quest.completed) continue; // Skip already completed quests
+    
+    // Validate if quest requirements are met
+    const validation = await validateQuestCompletion(user, quest);
+    
+    // If quest is now completable, mark it as completed
+    if (validation.success) {
+      quest.completed = true;
+      console.log(`✅ Quest auto-marked as completed: ${quest.title}`);
+    }
+  }
+  
+  // Update progress AND check completion for weekly quests
   for (let quest of quests.weekly) {
-    if (quest.completed) continue; // Skip completed quests
+    if (quest.completed) continue; // Skip already completed quests
     
     // Use quest.startedAt if available, otherwise fall back to startOfWeek
     const questStartTime = quest.startedAt ? new Date(quest.startedAt) : startOfWeek;
     
+    // Update progress based on quest type
     switch (quest.type) {
       case 'journal_5_days':
       case 'journal_7_days':
@@ -732,6 +747,13 @@ async function calculateQuestProgress(user) {
         }
         break;
     }
+    
+    // After updating progress, check if weekly quest is now complete
+    const validation = await validateQuestCompletion(user, quest);
+    if (validation.success) {
+      quest.completed = true;
+      console.log(`✅ Quest auto-marked as completed: ${quest.title} (Progress: ${quest.progress}/${quest.target})`);
+    }
   }
   
   return quests;
@@ -766,15 +788,7 @@ const completeQuest = async (req, res, next) => {
       });
     }
 
-    // Check if quest is already completed
-    if (quest.completed) {
-      return res.status(400).json({
-        success: false,
-        message: 'Quest already completed',
-      });
-    }
-
-    // ⚠️ VALIDATION: Check if quest conditions are met
+    // ⚠️ VALIDATION: Check if quest conditions are met (not if it's marked completed)
     const isValid = await validateQuestCompletion(user, quest);
     
     if (!isValid.success) {
