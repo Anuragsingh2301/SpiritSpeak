@@ -16,6 +16,19 @@ export const leagueData = [
     { name: "Luminary", xp: 5000, icon: '☀️', color: 'text-yellow-400' }
 ];
 
+// Function to get current league based on XP
+export const getCurrentLeague = (xp) => {
+    const currentLeagueIndex = leagueData.slice().reverse().findIndex(l => xp >= l.xp);
+    return leagueData[leagueData.length - 1 - currentLeagueIndex] || leagueData[0];
+};
+
+// Function to get next league based on XP
+export const getNextLeague = (xp) => {
+    const currentLeagueIndex = leagueData.slice().reverse().findIndex(l => xp >= l.xp);
+    const nextIndex = leagueData.length - currentLeagueIndex;
+    return leagueData[nextIndex] || null;
+};
+
 export const quests = {
     daily: [
         { id: 1, title: 'Write one entry', xp: 20, completed: true },

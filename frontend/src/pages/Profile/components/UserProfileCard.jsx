@@ -1,6 +1,7 @@
 import { FaCheck, FaDownload, FaFire, FaLock, FaSeedling, FaShieldAlt, FaStar, FaTrophy, FaWpbeginner } from "react-icons/fa";
 import GetCurrentUserData from "../../../hooks/GetCurrentUserData";
 import { useGetXPDataQuery } from "../../../apis/xpApiSlice";
+import { getCurrentLeague } from "../../../data";
 
 // --- Reusable Components for Card Sections ---
 
@@ -30,6 +31,9 @@ export default function UserProfileCard() {
   
   // Use global quest count from backend
   const totalQuestsCompleted = xpData?.data?.totalQuestsCompleted || 0;
+  
+  // Calculate current league based on XP
+  const currentLeague = getCurrentLeague(totalXP);
   
   // Format username: lowercase, remove spaces, add @ at front
   const formattedUsername = '@' + username.toLowerCase().replace(/\s+/g, '');
@@ -77,7 +81,7 @@ export default function UserProfileCard() {
             />
             <StatCard 
               icon={<FaShieldAlt className="w-7 h-7 text-green-500 mb-1" />} 
-              value="Sage" 
+              value={currentLeague.name}  
               label="Current League" 
             />
             <StatCard 

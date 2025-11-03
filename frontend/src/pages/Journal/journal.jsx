@@ -55,6 +55,17 @@ const Journal = ({ onClose, guideIdFromNav }) => {
         return;
       }
 
+      // Validate word count before sending to Gemini
+      const wordCount = journalText.trim().split(/\s+/).filter(Boolean).length;
+      if (wordCount < 10) {
+        alert('Your journal entry must be at least 10 words long to generate a reflection.');
+        return;
+      }
+      if (wordCount > 101) {
+        alert('Your journal entry cannot exceed 101 words. Please shorten your entry.');
+        return;
+      }
+
       if (remainingAttempts <= 0) {
         alert(`You've reached your daily limit of ${totalAttempts} reflections. Try again tomorrow!`);
         return;
@@ -180,11 +191,22 @@ const Journal = ({ onClose, guideIdFromNav }) => {
             className="w-full h-48 p-4 bg-stone-50 border rounded-lg resize-none focus:outline-none focus:ring-2 text-base leading-relaxed border-stone-200 focus:ring-teal-500" 
             placeholder="Let your thoughts flow freely..." 
             value={journalText} 
-            onChange={(e) => setJournalText(e.target.value)} 
+            onChange={(e) => setJournalText(e.target.value)}
+            minLength="50"
+            maxLength="600"
           ></textarea>
 
           <div className="text-right text-sm font-semibold mt-2">
-            <span className="text-slate-500">{wordCount} words</span>
+            <span className={`${
+              wordCount < 10 ? 'text-red-500' : 
+              wordCount > 101 ? 'text-orange-500' : 
+              'text-green-600'
+            }`}>
+              {wordCount} words 
+              {wordCount < 10 && <span className="text-red-400"> (min 10)</span>}
+              {wordCount > 101 && <span className="text-orange-400"> (max 101)</span>}
+              {wordCount >= 10 && wordCount <= 101 && <span className="text-green-400"> ✓</span>}
+            </span>
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 mt-4 p-4 bg-stone-50 rounded-lg">
